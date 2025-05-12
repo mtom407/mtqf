@@ -2,7 +2,9 @@ import datetime
 import re
 from calendar import monthrange
 from datetime import date, timedelta
-from pandas.tseries.offsets import BDay
+from pandas.tseries.offsets import BDay, CustomBusinessDay
+
+from holidays import HolidayServer
 
 
 def is_weekend(d):
@@ -63,8 +65,10 @@ def following(d, period, holidays=[]):
     period = parse_period(period)
     new_d = shift_months(d, period)
 
+    cday = CustomBusinessDay(holidays=holidays)
+
     if new_d in holidays or is_weekend(new_d):
-        return (new_d + BDay(1)).date()
+        return (new_d + cday).date()
     else:
         return new_d
 
@@ -73,8 +77,10 @@ def preceding(d, period, holidays=[]):
     period = parse_period(period)
     new_d = shift_months(d, period)
 
+    cday = CustomBusinessDay(holidays=holidays)
+
     if new_d in holidays or is_weekend(new_d):
-        return (new_d - BDay(1)).date()
+        return (new_d - cday).date()
     else:
         return new_d
 
@@ -83,14 +89,18 @@ def modified_following(d, period, holidays=[]):
     period = parse_period(period)
     new_d = shift_months(d, period)
 
+    cday = CustomBusinessDay(holidays=holidays)
+
     adjusted = new_d
     while is_weekend(adjusted) or adjusted in holidays:
-        adjusted = (adjusted + BDay(1)).date()
+        # adjusted = (adjusted + BDay(1)).date()
+        adjusted = (adjusted + cday).date()
 
     if adjusted.month != new_d.month:
         adjusted = new_d
         while is_weekend(adjusted) or adjusted in holidays:
-            adjusted = (adjusted - BDay(1)).date()
+            # adjusted = (adjusted - BDay(1)).date()
+            adjusted = (adjusted - cday).date()
 
     return adjusted
 
@@ -99,14 +109,18 @@ def modified_preceding(d, period, holidays=[]):
     period = parse_period(period)
     new_d = shift_months(d, period)
 
+    cday = CustomBusinessDay(holidays=holidays)
+
     adjusted = new_d
     while is_weekend(adjusted) or adjusted in holidays:
-        adjusted = (adjusted - BDay(1)).date()
+        # adjusted = (adjusted - BDay(1)).date()
+        adjusted = (adjusted - cday).date()
 
     if adjusted.month != new_d.month:
         adjusted = new_d
         while is_weekend(adjusted) or adjusted in holidays:
-            adjusted = (adjusted + BDay(1)).date()
+            # adjusted = (adjusted + BDay(1)).date()
+            adjusted = (adjusted + cday).date()
 
     return adjusted
 
@@ -127,3 +141,12 @@ if __name__ == "__main__":
 
     print(modified_preceding(date(2023, 2, 1), "1M"))
     print(preceding(date(2023, 2, 1), "1M"))
+
+    d4 = date(2025, 4, 30)
+    print(d4)
+
+    hs = HolidayServer(start=date(2025, 1, 1), end=date(2025, 12, 31))
+    polish = hs.get_holidays("Poland", "Settlement")
+
+    cday = CustomBusinessDay(holidays=polish)
+    print(d4 + 2 * cday)
