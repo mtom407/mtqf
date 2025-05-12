@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    #vis.vega-embed {
+      width: 100%;
+      display: flex;
+    }
+
+    #vis.vega-embed details,
+    #vis.vega-embed details summary {
+      position: relative;
+    }
+  </style>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-lite@5.20.1"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+</head>
+<body>
+  <div id="vis"></div>
+  <script>
+    (function(vegaEmbed) {
+      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300, "stroke": null}, "axis": {"grid": true}, "title": {"anchor": "start", "fontSize": 16}}, "data": {"name": "data-f6906f3856cff3897444659f939a9c1b"}, "mark": {"type": "circle"}, "encoding": {"color": {"value": "red"}, "tooltip": [{"field": "maturity", "type": "quantitative"}, {"field": "Zero rate", "type": "quantitative"}], "x": {"field": "maturity", "type": "quantitative"}, "y": {"field": "Zero rate", "scale": {"domain": [0.017877292982127334, 0.04671025028950338]}, "type": "quantitative"}}, "height": 400, "title": "Discount curve None", "width": 900, "$schema": "https://vega.github.io/schema/vega-lite/v5.20.1.json", "datasets": {"data-f6906f3856cff3897444659f939a9c1b": [{"maturity": 1, "discount_factor": 0.9998788833618164, "Zero rate": 0.04421025028950338}, {"maturity": 2, "discount_factor": 0.9997579455375671, "Zero rate": 0.04418028662749976}, {"maturity": 3, "discount_factor": 0.9996370673179626, "Zero rate": 0.04416482456186402}, {"maturity": 7, "discount_factor": 0.999154806137085, "Zero rate": 0.044089457547195746}, {"maturity": 14, "discount_factor": 0.9983170628547668, "Zero rate": 0.043913538187497256}, {"maturity": 21, "discount_factor": 0.9974825382232666, "Zero rate": 0.04381105250135987}, {"maturity": 30, "discount_factor": 0.9964077472686768, "Zero rate": 0.043784431015341435}, {"maturity": 60, "discount_factor": 0.992875874042511, "Zero rate": 0.043493543817258326}, {"maturity": 90, "discount_factor": 0.9894362688064575, "Zero rate": 0.04306968957297837}, {"maturity": 120, "discount_factor": 0.9861565828323364, "Zero rate": 0.0424012312163212}, {"maturity": 150, "discount_factor": 0.9829906225204468, "Zero rate": 0.04174553306371543}, {"maturity": 180, "discount_factor": 0.9799299836158752, "Zero rate": 0.04111148117576883}, {"maturity": 210, "discount_factor": 0.9770153760910034, "Zero rate": 0.04041573566294421}, {"maturity": 240, "discount_factor": 0.9742087721824646, "Zero rate": 0.03973884745612271}, {"maturity": 270, "discount_factor": 0.9714930653572083, "Zero rate": 0.03909710770221351}, {"maturity": 300, "discount_factor": 0.9688595533370972, "Zero rate": 0.03849000128910312}, {"maturity": 330, "discount_factor": 0.9662967324256897, "Zero rate": 0.03792053067977528}, {"maturity": 365, "discount_factor": 0.9633865356445312, "Zero rate": 0.037300560756078585}, {"maturity": 730, "discount_factor": 0.9350730180740356, "Zero rate": 0.033565329724214346}, {"maturity": 1095, "discount_factor": 0.906076192855835, "Zero rate": 0.03287729298212733}, {"maturity": 1460, "discount_factor": 0.8761677742004395, "Zero rate": 0.03304942095558522}, {"maturity": 1825, "discount_factor": 0.8455855846405029, "Zero rate": 0.03354517844200157}, {"maturity": 2190, "discount_factor": 0.8146129250526428, "Zero rate": 0.03417370311818436}, {"maturity": 2555, "discount_factor": 0.7837761044502258, "Zero rate": 0.034804554344452565}, {"maturity": 2920, "discount_factor": 0.7533386945724487, "Zero rate": 0.03540504489434627}, {"maturity": 3285, "discount_factor": 0.7234674096107483, "Zero rate": 0.03596664202076915}, {"maturity": 3650, "discount_factor": 0.6942605376243591, "Zero rate": 0.03649079749005882}]}};
+      var embedOpt = {"mode": "vega-lite"};
+
+      function showError(el, error){
+          el.innerHTML = ('<div style="color:red;">'
+                          + '<p>JavaScript Error: ' + error.message + '</p>'
+                          + "<p>This usually means there's a typo in your chart specification. "
+                          + "See the javascript console for the full traceback.</p>"
+                          + '</div>');
+          throw error;
+      }
+      const el = document.getElementById('vis');
+      vegaEmbed("#vis", spec, embedOpt)
+        .catch(error => showError(el, error));
+    })(vegaEmbed);
+
+  </script>
+</body>
+</html>
