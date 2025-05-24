@@ -3,7 +3,6 @@ import re
 from calendar import monthrange
 from datetime import date, timedelta
 from pandas.tseries.offsets import BDay, CustomBusinessDay
-
 from holidays import HolidayServer
 
 
@@ -15,6 +14,16 @@ def is_eom(d):
     delta = timedelta(days=1)
     next_day = d + delta
     return d.month != next_day.month
+
+
+def get_eom(d, business_day=False, holidays=[]):
+    last_day = monthrange(d.year, d.month)[-1]
+    eom = date(d.year, d.month, last_day)
+    if business_day:
+        cday = CustomBusinessDay(holidays=holidays)
+        eom = (eom - cday).date()
+
+    return eom
 
 
 def shift_months(d, months, keep_eom=True):
@@ -31,10 +40,15 @@ def shift_months(d, months, keep_eom=True):
     if d.day > month_max_days:
         new_d = date(d.year + new_years, d.month + new_months, month_max_days)
     else:
-        if keep_eom:
+
+        new_d = date(d.year + new_years, d.month + new_months, d.day)
+        if get_eom(d, business_day=True) == d and keep_eom:
             new_d = date(d.year + new_years, d.month + new_months, month_max_days)
-        else:
-            new_d = date(d.year + new_years, d.month + new_months, d.day)
+
+        # if keep_eom:
+        #     new_d = date(d.year + new_years, d.month + new_months, month_max_days)
+        # else:
+        #     new_d = date(d.year + new_years, d.month + new_months, d.day)
 
     return new_d
 
@@ -60,10 +74,10 @@ def parse_period(period):
         raise ValueError("Error")
 
 
-def following(d, period, holidays=[]):
+def following(d, period, keep_eom=True, holidays=[]):
 
     period = parse_period(period)
-    new_d = shift_months(d, period)
+    new_d = shift_months(d, period, keep_eom=keep_eom)
 
     cday = CustomBusinessDay(holidays=holidays)
 
@@ -73,9 +87,9 @@ def following(d, period, holidays=[]):
         return new_d
 
 
-def preceding(d, period, holidays=[]):
+def preceding(d, period, keep_eom=True, holidays=[]):
     period = parse_period(period)
-    new_d = shift_months(d, period)
+    new_d = shift_months(d, period, keep_eom=keep_eom)
 
     cday = CustomBusinessDay(holidays=holidays)
 
@@ -85,9 +99,9 @@ def preceding(d, period, holidays=[]):
         return new_d
 
 
-def modified_following(d, period, holidays=[]):
+def modified_following(d, period, keep_eom=True, holidays=[]):
     period = parse_period(period)
-    new_d = shift_months(d, period)
+    new_d = shift_months(d, period, keep_eom=keep_eom)
 
     cday = CustomBusinessDay(holidays=holidays)
 
@@ -105,9 +119,9 @@ def modified_following(d, period, holidays=[]):
     return adjusted
 
 
-def modified_preceding(d, period, holidays=[]):
+def modified_preceding(d, period, keep_eom=True, holidays=[]):
     period = parse_period(period)
-    new_d = shift_months(d, period)
+    new_d = shift_months(d, period, keep_eom=keep_eom)
 
     cday = CustomBusinessDay(holidays=holidays)
 
@@ -142,11 +156,18 @@ if __name__ == "__main__":
     print(modified_preceding(date(2023, 2, 1), "1M"))
     print(preceding(date(2023, 2, 1), "1M"))
 
+    print("cday test")
     d4 = date(2025, 4, 30)
     print(d4)
-
     hs = HolidayServer(start=date(2025, 1, 1), end=date(2025, 12, 31))
     polish = hs.get_holidays("Poland", "Settlement")
-
     cday = CustomBusinessDay(holidays=polish)
     print(d4 + 2 * cday)
+    print()
+
+    print(shift_months(date(2025, 2, 15), months=1, keep_eom=False))
+
+    print(get_eom(date(2025, 5, 12)))  # 2025-05-31
+    print(
+        get_eom(date(2025, 5, 12), business_day=True)
+    )  # 2025-05-30 or earlier if 30th is holiday/weekend
