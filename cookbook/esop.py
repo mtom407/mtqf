@@ -155,14 +155,14 @@ class CoxRossRubinstein:
                 # for the second to last column we want payoffs
                 # because the value of the option will be the payoff
                 # at the terminal node
-                if j == len(payoffs) - 1:
-                    source = payoffs
-                # for other columns just take the calculated option value
-                else:
-                    source = result
+                # if j == len(payoffs) - 1:
+                #     source = payoffs
+                # # for other columns just take the calculated option value
+                # else:
+                #     source = result
 
-                up_poff = self._grab_up(source, i, j)
-                down_poff = self._grab_down(source, i, j)
+                up_poff = self._grab_up(result, i, j)
+                down_poff = self._grab_down(result, i, j)
 
                 # print(f"{up_poff=} | {down_poff=}")
 
